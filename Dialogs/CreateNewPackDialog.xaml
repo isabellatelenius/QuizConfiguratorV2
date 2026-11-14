@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuizConfiguratorV2.Dialogs"
+        xmlns:views="clr-namespace:QuizConfiguratorV2.Views"
         mc:Ignorable="d"
         Title="CreateNewPackDialog" Height="450" Width="800">
     <Grid>
