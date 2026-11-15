@@ -58,9 +58,10 @@
             <TextBox Height="80"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
-                     VerticalScrollBarVisibility="Auto"/>
+                     VerticalScrollBarVisibility="Auto"
+                     Text="{Binding SelectedQuestion.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBlock Text="Answer Options"
+                <TextBlock Text="Answer Options"
                        FontSize="16"
                        FontWeight="Bold"
                        Margin="0,20,0,10"/>
@@ -72,24 +73,28 @@
                 <RadioButton GroupName="CorrectAnswer"
                              Content="Answer 1"
                              Margin="0,0,0,5"/>
-                <TextBox Height="30" Margin="0,0,0,10"/>
+                <TextBox Height="30" Margin="0,0,0,10"
+                         Text="{Binding SelectedQuestion.Answer1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <RadioButton GroupName="CorrectAnswer"
                              Content="Answer 2"
                              Margin="0,0,0,5"/>
-                <TextBox Height="30" Margin="0,0,0,10"/>
+                <TextBox Height="30" Margin="0,0,0,10"
+                         Text="{Binding SelectedQuestion.Answer2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <RadioButton GroupName="CorrectAnswer"
                              Content="Answer 3"
                              Margin="0,0,0,5"/>
-                <TextBox Height="30" Margin="0,0,0,10"/>
+                <TextBox Height="30" Margin="0,0,0,10"
+                         Text="{Binding SelectedQuestion.Answer3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <RadioButton GroupName="CorrectAnswer"
                              Content="Answer 4"
                              Margin="0,0,0,5"/>
-                <TextBox Height="30"/>
+                <TextBox Height="30"
+                         Text="{Binding SelectedQuestion.Answer4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            </StackPanel>
+            </StackPanel> 
 
             <StackPanel Orientation="Horizontal"
                         Margin="0,20,0,0">
@@ -97,7 +102,8 @@
                 <Button Content="Add Question"
                         Width="120"
                         Height="35"
-                        Margin="35"/>
+                        Margin="35"
+                        Command="{Binding AddQuestionCommand}"/>
 
                 <Button Content="Delete Question"
                         Width="120"
