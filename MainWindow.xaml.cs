@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using QuizConfiguratorV2.ViewModels;
+
 
 namespace QuizConfiguratorV2
 {
@@ -17,8 +19,14 @@ namespace QuizConfiguratorV2
     public partial class MainWindow : Window
     {
         public MainWindow()
+
         {
             InitializeComponent();
+
+            if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
+            {
+                PlayerViewControl.SetQuestionPack(viewModel.QuestionPacks);
+            }
         }
     }
 }

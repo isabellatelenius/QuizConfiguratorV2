@@ -12,7 +12,22 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <views:MenuView Grid.Row="0"/>
-        <views:ConfigurationView Grid.Row="1"/>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Configuration">
+                <views:ConfigurationView
+                x:Name="ConfigurationViewControl"/>
+            </TabItem>
+
+            <TabItem Header="Play Quiz">
+                <views:PlayerView 
+                    x:Name="PlayerViewControl"/>
+
+            </TabItem>
+        </TabControl>
+        
+        
     </Grid>
 </Window>
