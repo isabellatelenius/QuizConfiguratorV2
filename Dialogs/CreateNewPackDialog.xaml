@@ -6,8 +6,34 @@
         xmlns:local="clr-namespace:QuizConfiguratorV2.Dialogs"
         xmlns:views="clr-namespace:QuizConfiguratorV2.Views"
         mc:Ignorable="d"
-        Title="CreateNewPackDialog" Height="450" Width="800">
-    <Grid>
+        Title="New Question Pack" 
+        Height="260" 
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="New Question Pack"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"/>
+            <TextBlock Text="Pack Name:"
+                       Margin="0,0,0,5"/>
+            <TextBox x:Name="PackNameTextBox"
+                     Height="30"
+                     Margin="0,0,0,20"/>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="Create"   
+                        Width="100"
+                        Margin="0,0,10,0"
+                        Click="Create_Click"/>
+                <Button Content="Cancel"
+                        Width="100"
+                        Click="Cancel_Click"/>
+
+            </StackPanel>
+        </StackPanel>
         
     </Grid>
 </Window>

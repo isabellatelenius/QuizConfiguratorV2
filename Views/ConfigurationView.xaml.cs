@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace QuizConfiguratorV2.Views
+
 {
     /// <summary>
     /// Interaction logic for ConfigurationView.xaml
@@ -21,6 +22,7 @@ namespace QuizConfiguratorV2.Views
         public ConfigurationView()
         {
             InitializeComponent();
+            DataContext = new global::QuizConfiguratorV2.ViewModels.ConfigurationViewModel();
         }
     }
 }
