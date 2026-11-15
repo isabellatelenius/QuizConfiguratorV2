@@ -36,6 +36,7 @@ namespace QuizConfiguratorV2.ViewModels
                     _selectedPack = value;
                     SelectedQuestion = null;
                     OnPropertyChanged(nameof(SelectedPack));
+                    OnPropertyChanged(nameof(CurrentQuestions));
                 }
             }
         }
@@ -54,6 +55,11 @@ namespace QuizConfiguratorV2.ViewModels
                     NotifyCorrectAnswerChanged();
                 }
             }
+        }
+
+        public ObservableCollection<Question>? CurrentQuestions
+        {
+            get => SelectedPack?.Questions;
         }
 
         public bool IsAnswer1Correct

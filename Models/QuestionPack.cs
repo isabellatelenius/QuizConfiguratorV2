@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace QuizConfiguratorV2.Models
 {
@@ -12,7 +13,7 @@ namespace QuizConfiguratorV2.Models
 
         public int TimeLimit { get; set; } = 30;
 
-        public List<Question> Questions { get; set; } = new();
+        public ObservableCollection<Question> Questions { get; set; } = new();
 
     }
 }
