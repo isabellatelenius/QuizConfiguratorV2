@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using QuizConfiguratorV2.Dialogs;
+using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using QuizConfiguratorV2.Models;
@@ -127,6 +129,10 @@ namespace QuizConfiguratorV2.ViewModels
         public ICommand DeletePackCommand { get; }
 
         public ICommand AddQuestionCommand { get; }
+        public ICommand DeleteQuestionCommand { get; }
+        public ICommand PackOptionsCommand { get; }
+
+
 
 
         public ConfigurationViewModel()
@@ -135,6 +141,8 @@ namespace QuizConfiguratorV2.ViewModels
             NewPackCommand = new RelayCommand(_ => CreateNewPack());
             DeletePackCommand = new RelayCommand(_ => DeletePack());
             AddQuestionCommand = new RelayCommand(_ => AddQuestion());
+            DeleteQuestionCommand = new RelayCommand(_ => DeleteQuestion());
+            PackOptionsCommand = new RelayCommand(_ => OpenPackOptions());
 
 
         }
@@ -185,6 +193,32 @@ namespace QuizConfiguratorV2.ViewModels
                 CorrectAnswerIndex = 0
 
             });
+        }
+
+        private void DeleteQuestion()
+        {
+            if (SelectedPack == null || SelectedQuestion == null)
+            {
+                return;
+            }
+            SelectedPack.Questions.Remove(SelectedQuestion);
+            SelectedQuestion = null;
+        }
+
+        private void OpenPackOptions()
+        {
+            if (SelectedPack == null)
+            {
+                MessageBox.Show("Please select a question pack first.");
+                return;
+            }
+
+            var dialog = new PackOptionsDialog(SelectedPack.Difficulty, SelectedPack.TimeLimit);
+            if (dialog.ShowDialog() == true)
+            {
+                SelectedPack.Difficulty = dialog.SelectedDifficulty;
+                SelectedPack.TimeLimit = dialog.SelectedTimeLimit;
+            }
         }
 
     }

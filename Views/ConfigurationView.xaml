@@ -38,7 +38,12 @@
                 <Button Content="Delete"
                     Width="100"
                     Command="{Binding DeletePackCommand}"/>
-
+                
+                <Button Content="Pack Options"
+                    Width="120"
+                    Margin="10,0,0,0"
+                    Height="30"
+                    Command="{Binding PackOptionsCommand}"/>
 
             </StackPanel>
 
@@ -122,7 +127,8 @@
 
                 <Button Content="Delete Question"
                         Width="120"
-                        Height="35"/>
+                        Height="35"
+                        Command="{Binding DeleteQuestionCommand}"/>
 
             </StackPanel>
 
