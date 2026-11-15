@@ -9,6 +9,8 @@ using QuizConfiguratorV2.Models;
 using System.Windows.Input;
 using QuizConfiguratorV2.Commands;
 using QuizConfiguratorV2.Services;
+using System.IO;
+using System.Text.Json;
 using System.Drawing.Text;
 using System.Security.Cryptography.X509Certificates;
 
@@ -144,6 +146,8 @@ namespace QuizConfiguratorV2.ViewModels
             DeleteQuestionCommand = new RelayCommand(_ => DeleteQuestion());
             PackOptionsCommand = new RelayCommand(_ => OpenPackOptions());
 
+            LoadQuestionPacks();
+
 
         }
 
@@ -218,6 +222,43 @@ namespace QuizConfiguratorV2.ViewModels
             {
                 SelectedPack.Difficulty = dialog.SelectedDifficulty;
                 SelectedPack.TimeLimit = dialog.SelectedTimeLimit;
+            }
+        }
+
+        private readonly string _savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuizConfiguratorV2", "questionpacks.json");
+
+        public void SaveQuestionPacks()
+        {
+            string? directory = Path.GetDirectoryName(_savePath);
+
+            if (directory!= null)
+            {
+                Directory.CreateDirectory(directory);
+
+            }
+
+            string json = JsonSerializer.Serialize(QuestionPacks, new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(_savePath, json);
+        }
+
+        private void LoadQuestionPacks()
+        {
+            if (!File.Exists(_savePath))
+                return;
+
+            string json = File.ReadAllText(_savePath);
+
+            var packs = JsonSerializer.Deserialize<ObservableCollection<QuestionPack>>(json);
+
+            if (packs == null)
+                return;
+
+            QuestionPacks.Clear();
+
+            foreach (QuestionPack pack in packs)
+            {
+                QuestionPacks.Add(pack);
             }
         }
 

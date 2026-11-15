@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 using QuizConfiguratorV2.ViewModels;
 
 
@@ -27,6 +28,15 @@ namespace QuizConfiguratorV2
             {
                 PlayerViewControl.SetQuestionPack(viewModel.QuestionPacks);
             }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
+            {
+                viewModel.SaveQuestionPacks();
+            }
+            base.OnClosing(e);
         }
     }
 }
