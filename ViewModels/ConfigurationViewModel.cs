@@ -30,11 +30,15 @@ namespace QuizConfiguratorV2.ViewModels
 
         public ICommand NewPackCommand { get; }
 
+        public ICommand DeletePackCommand { get; }
+
 
         public ConfigurationViewModel()
         {
 
             NewPackCommand = new RelayCommand(_ => CreateNewPack());
+            DeletePackCommand = new RelayCommand(_ => DeletePack());
+
 
         }
 
@@ -53,8 +57,19 @@ namespace QuizConfiguratorV2.ViewModels
             });
 
 
+
+        }
+
+        private void DeletePack()
+        {
+            if (SelectedPack == null)
+            {
+                return;
+            }
+
+            QuestionPacks.Remove(SelectedPack);
+            SelectedPack = null;
         }
     }
-
 
 }

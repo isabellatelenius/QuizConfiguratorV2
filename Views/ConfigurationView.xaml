@@ -21,6 +21,7 @@
 
             <ListBox Height="300"
                      ItemsSource="{Binding QuestionPacks}"
+                     SelectedItem="{Binding SelectedPack, Mode=TwoWay}"
                      DisplayMemberPath="Name"/>
 
 
@@ -35,7 +36,9 @@
 
 
                 <Button Content="Delete"
-                    Width="100"/>
+                    Width="100"
+                    Command="{Binding DeletePackCommand}"/>
+
 
             </StackPanel>
 
