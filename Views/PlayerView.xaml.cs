@@ -12,6 +12,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using QuizConfiguratorV2.Models;
+using System.Linq;
+using System.Windows.Threading;
 
 namespace QuizConfiguratorV2.Views
 {
@@ -25,12 +27,24 @@ namespace QuizConfiguratorV2.Views
         private int _questionIndex;
         private int _score;
 
+        private List<Question> _questions = new();
+        private List<(string Text, int OriginalIndex)> _answers = new();
+
+        private readonly DispatcherTimer _timer = new();
+        private int _remainingSeconds;
+        private bool _answerLocked = true;
+
+
         public PlayerView()
         {
             InitializeComponent();
 
             AnswerPanel.Visibility = Visibility.Collapsed;
             NextQuestionButton.Visibility = Visibility.Collapsed;
+            TimerText.Visibility = Visibility.Collapsed;
+
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += Timer_Tick;
         }
 
         public void SetQuestionPack(
@@ -55,13 +69,23 @@ namespace QuizConfiguratorV2.Views
                 return;
             }
 
+            _timer.Stop();
+
             _currentPack = pack;
+
+            _questions = pack.Questions
+                .OrderBy(_ => Random.Shared.Next())
+                .ToList();
+
             _questionIndex = 0;
             _score = 0;
 
             ResultText.Text = "";
+
+            PackComboBox.IsEnabled = false;
             AnswerPanel.Visibility = Visibility.Visible;
             NextQuestionButton.Visibility = Visibility.Visible;
+            TimerText.Visibility = Visibility.Visible;
 
             ShowQuestion();
 
@@ -72,72 +96,167 @@ namespace QuizConfiguratorV2.Views
             if (_currentPack == null)
                 return;
 
-            Question question = _currentPack.Questions[_questionIndex];
 
-            QuestionNumberText.Text =
-                $"Question {_questionIndex + 1} of {_currentPack.Questions.Count}";
+            _timer.Stop();
+            _answerLocked = true;
 
-            QuestionText.Text = question.Text;
+            Question question = _questions[_questionIndex];
 
-            Answer1Radio.Content = question.Answer1;
-            Answer2Radio.Content = question.Answer2;
-            Answer3Radio.Content = question.Answer3;
-            Answer4Radio.Content = question.Answer4;
+            _answers = new List<(string Text, int OriginalIndex)>
+            {
+                (question.Answer1, 0),
+                (question.Answer2, 1),
+                (question.Answer3, 2),
+                (question.Answer4, 3)
+            }
+            .OrderBy(_ => Random.Shared.Next())
+            .ToList();
 
             Answer1Radio.IsChecked = false;
             Answer2Radio.IsChecked = false;
             Answer3Radio.IsChecked = false;
             Answer4Radio.IsChecked = false;
 
-            NextQuestionButton.Content = _questionIndex == _currentPack.Questions.Count - 1 ? "Finish" : "Next Question";
+            Answer1Radio.Content = _answers[0].Text;
+            Answer2Radio.Content = _answers[1].Text;
+            Answer3Radio.Content = _answers[2].Text;
+            Answer4Radio.Content = _answers[3].Text;
 
+            Answer1Radio.IsEnabled = true;
+            Answer2Radio.IsEnabled = true;
+            Answer3Radio.IsEnabled = true;
+            Answer4Radio.IsEnabled = true;
+
+            QuestionNumberText.Text =
+                $"Question {_questionIndex + 1} of {_questions.Count}";
+
+            QuestionText.Text = question.Text;
+            ResultText.Text = "";
+
+            NextQuestionButton.IsEnabled = false;
+            NextQuestionButton.Content =
+                _questionIndex == _questions.Count - 1
+                ? "Finish Quiz"
+                : "Next Question";
+
+            _remainingSeconds = Math.Max(1, _currentPack.TimeLimit);
+            TimerText.Text = $"Time remaining: {_remainingSeconds}";
+
+            _answerLocked = false;
+            _timer.Start();
 
         }
 
-        private void NextQuestionButton_Click(object sender, RoutedEventArgs e)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
-            if (_currentPack == null)
-                return;
+            _remainingSeconds--;
 
-            int selectedAnswerIndex = -1;
+            TimerText.Text = $"Time remaining: {_remainingSeconds}";
 
-            if (Answer1Radio.IsChecked == true) selectedAnswerIndex = 0;
-            else if (Answer2Radio.IsChecked == true) selectedAnswerIndex = 1;
-            else if (Answer3Radio.IsChecked == true) selectedAnswerIndex = 2;
-            else if (Answer4Radio.IsChecked == true) selectedAnswerIndex = 3;
-
-            if (selectedAnswerIndex == -1)
+            if (_remainingSeconds <= 0)
             {
-                MessageBox.Show("Please select an answer.");
-                return;
+                FinishQuestion(-1);
+
             }
+        }
 
-            Question question = _currentPack.Questions[_questionIndex];
+        private void FinishQuestion(int selectedAnswer)
+        {
+            if (_answerLocked || _currentPack == null)
+                return;
 
-            if (selectedAnswerIndex == question.CorrectAnswerIndex)
+            _answerLocked = true;
+            _timer.Stop();
+
+            Question question = _questions[_questionIndex];
+
+            string correctAnswer = question.CorrectAnswerIndex switch
+            {
+                0 => question.Answer1,
+                1 => question.Answer2,
+                2 => question.Answer3,
+                3 => question.Answer4,
+                _ => ""
+            };
+
+            if (selectedAnswer == question.CorrectAnswerIndex)
             {
                 _score++;
-
-                _questionIndex++;
-
-
-                if (_questionIndex < _currentPack.Questions.Count)
-                {
-                    ShowQuestion();
-                }
-                else
-                {
-                    QuestionNumberText.Text = "";
-                    QuestionText.Text = "Quiz Completed!";
-
-                    AnswerPanel.Visibility = Visibility.Collapsed;
-                    NextQuestionButton.Visibility = Visibility.Collapsed;
-
-                    ResultText.Text =
-                        $"Your score: {_score} out of {_currentPack.Questions.Count}";
-
-                }
+                ResultText.Text = "Correct answer!";
             }
+            else if (selectedAnswer == -1)
+            {
+                ResultText.Text =
+                    $"Time is up! Correct answer: {correctAnswer}";
+            }
+            else
+            {
+                ResultText.Text =
+                    $"Incorrect! Correct answer: {correctAnswer}";
+            }
+
+            Answer1Radio.IsEnabled = false;
+            Answer2Radio.IsEnabled = false;
+            Answer3Radio.IsEnabled = false;
+            Answer4Radio.IsEnabled = false;
+
+            NextQuestionButton.IsEnabled = true;
+
+        }
+
+
+        private void NextQuestionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_answerLocked || _currentPack == null)
+                return;
+
+            _questionIndex++;
+
+            if (_questionIndex < _questions.Count)
+            {
+                ShowQuestion();
+            }
+            else
+            {
+                _timer.Stop();
+
+                QuestionNumberText.Text = "";
+                QuestionText.Text = "Quiz completed!";
+
+                AnswerPanel.Visibility = Visibility.Collapsed;
+                NextQuestionButton.Visibility = Visibility.Collapsed;
+                TimerText.Visibility = Visibility.Collapsed;
+
+                ResultText.Text =
+                    $"Your score: {_score} out of {_questions.Count}";
+
+                PackComboBox.IsEnabled = true;
+
+            }
+        }
+
+
+
+
+        private void Answer_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_answerLocked || _currentPack == null)
+                return;
+
+            int selectedIndex = -1;
+
+            if (sender == Answer1Radio) selectedIndex = 0;
+            else if (sender == Answer2Radio) selectedIndex = 1;
+            else if (sender == Answer3Radio) selectedIndex = 2;
+            else if (sender == Answer4Radio) selectedIndex = 3;
+
+            if (selectedIndex >= 0)
+            {
+                FinishQuestion(_answers[selectedIndex].OriginalIndex);
+
+            }
+            
+
         }
     }
 }
