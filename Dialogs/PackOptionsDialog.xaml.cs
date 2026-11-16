@@ -17,12 +17,14 @@ namespace QuizConfiguratorV2.Dialogs
     /// </summary>
     public partial class PackOptionsDialog : Window
     {
-
+        public string SelectedPackName { get; private set; } = "";
         public string SelectedDifficulty { get; private set; } = "Medium";
         public int SelectedTimeLimit { get; private set; } = 30;
-        public PackOptionsDialog(string difficulty, int timeLimit)
+        public PackOptionsDialog(string packName, string difficulty, int timeLimit)
         {
             InitializeComponent();
+            SelectedPackName = packName;
+            PackNameTextBox.Text = packName;
             SelectedDifficulty = difficulty;
             SelectedTimeLimit = timeLimit;
 
@@ -48,6 +50,15 @@ namespace QuizConfiguratorV2.Dialogs
 
     private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+
+            string packName = PackNameTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(packName))
+            {
+                MessageBox.Show("Please enter a pack name.");
+                return;
+            }
+
             if (!int.TryParse(TimeLimitTextBox.Text, out int timeLimit) || timeLimit <= 0)
             {
                 MessageBox.Show("Please enter a valid time limit greater than 0.",
@@ -61,6 +72,8 @@ namespace QuizConfiguratorV2.Dialogs
                 return;
             }
 
+
+            SelectedPackName = packName;
             SelectedDifficulty = selectedItem.Content.ToString() ?? "Medium";
             SelectedTimeLimit = timeLimit;
 

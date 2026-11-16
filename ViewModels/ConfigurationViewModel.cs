@@ -216,9 +216,14 @@ namespace QuizConfiguratorV2.ViewModels
                 return;
             }
 
-            var dialog = new PackOptionsDialog(SelectedPack.Difficulty, SelectedPack.TimeLimit);
+            var dialog = new PackOptionsDialog(
+                SelectedPack.Name, 
+                SelectedPack.Difficulty,
+                SelectedPack.TimeLimit);
+
             if (dialog.ShowDialog() == true)
             {
+                SelectedPack.Name = dialog.SelectedPackName;
                 SelectedPack.Difficulty = dialog.SelectedDifficulty;
                 SelectedPack.TimeLimit = dialog.SelectedTimeLimit;
             }
