@@ -186,7 +186,7 @@ namespace QuizConfiguratorV2.ViewModels
                 return;
             }
 
-            SelectedPack.Questions.Add(new Question
+            Question question = new Question
             {
                 Text = "New Question",
                 Answer1 = "",
@@ -195,7 +195,9 @@ namespace QuizConfiguratorV2.ViewModels
                 Answer4 = "",
                 CorrectAnswerIndex = 0
 
-            });
+            };
+            SelectedPack.Questions.Add(question);
+            SelectedQuestion = question;
         }
 
         private void DeleteQuestion()
