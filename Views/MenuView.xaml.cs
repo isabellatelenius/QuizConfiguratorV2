@@ -22,5 +22,38 @@ namespace QuizConfiguratorV2.Views
         {
             InitializeComponent();
         }
+
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                mainWindow.NavigateToTab(0);
+            }
+        }
+
+        private void PlayMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+            
+
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                mainWindow.NavigateToTab(1);
+            }
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
+        }
+
+        private async void OpenMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                await mainWindow.ReloadQuestionPacks();
+            }
+        }
+
     }
 }

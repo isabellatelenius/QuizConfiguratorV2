@@ -10,9 +10,11 @@
         <MenuItem Header="_File">
             <MenuItem Header="_New Question Pack"
                       Command="{Binding NewPackCommand}"/>
-            <MenuItem Header="_Open"/>
+            <MenuItem Header="_Open"
+                      Click="OpenMenuItem_Click"/>
             <Separator/>
-            <MenuItem Header="E_xit"/>
+            <MenuItem Header="_Exit"
+                      Click="ExitMenuItem_Click"/>
         </MenuItem>
 
         <MenuItem Header="_Edit">
@@ -27,8 +29,11 @@
         </MenuItem>
 
         <MenuItem Header="_View">
-            <MenuItem Header="_Edit"/>
-            <MenuItem Header="_Play"/>
+            <MenuItem Header="_Edit"
+                      Click="EditMenuItem_Click"/>
+            <MenuItem Header="_Play"
+                      Click="PlayMenuItem_Click"/>
+
         </MenuItem>
     </Menu>
 </UserControl>

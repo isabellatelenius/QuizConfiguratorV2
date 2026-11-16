@@ -27,7 +27,7 @@
         <views:MenuView Grid.Row="0"
                         DataContext="{Binding DataContext, ElementName=ConfigurationViewControl}"/>
 
-        <TabControl Grid.Row="1">
+        <TabControl x:Name="MainTabControl" Grid.Row="1">
             <TabItem Header="Configuration">
                 <views:ConfigurationView
                 x:Name="ConfigurationViewControl"/>

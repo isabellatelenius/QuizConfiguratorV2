@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using QuizConfiguratorV2.ViewModels;
 
@@ -35,6 +36,20 @@ namespace QuizConfiguratorV2
           
                 PlayerViewControl.SetQuestionPack(viewModel.QuestionPacks);
             }
+        }
+
+        public void NavigateToTab(int tabIndex)
+        {
+            MainTabControl.SelectedIndex = tabIndex;
+        }
+
+        public async Task ReloadQuestionPacks()
+        {
+            if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
+            {
+                await viewModel.LoadQuestionPacksAsync();
+            }
+
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
