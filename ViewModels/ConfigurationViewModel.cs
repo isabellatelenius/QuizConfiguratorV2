@@ -11,8 +11,10 @@ using QuizConfiguratorV2.Commands;
 using QuizConfiguratorV2.Services;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Drawing.Text;
 using System.Security.Cryptography.X509Certificates;
+using System.Linq.Expressions;
 
 namespace QuizConfiguratorV2.ViewModels
 {
@@ -146,9 +148,6 @@ namespace QuizConfiguratorV2.ViewModels
             DeleteQuestionCommand = new RelayCommand(_ => DeleteQuestion());
             PackOptionsCommand = new RelayCommand(_ => OpenPackOptions());
 
-            LoadQuestionPacks();
-
-
         }
 
         private void CreateNewPack()
@@ -225,13 +224,16 @@ namespace QuizConfiguratorV2.ViewModels
             }
         }
 
-        private readonly string _savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "QuizConfiguratorV2", "questionpacks.json");
+        private readonly string _savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "QuizConfiguratorV2", "questionpacks.json");
 
-        public void SaveQuestionPacks()
+        public async Task SaveQuestionPacks()
         {
-            string? directory = Path.GetDirectoryName(_savePath);
+            try
+            {
+                string? directory = Path.GetDirectoryName(_savePath);
 
-            if (directory!= null)
+
+            if (directory != null)
             {
                 Directory.CreateDirectory(directory);
 
@@ -239,27 +241,61 @@ namespace QuizConfiguratorV2.ViewModels
 
             string json = JsonSerializer.Serialize(QuestionPacks, new JsonSerializerOptions { WriteIndented = true });
 
-            File.WriteAllText(_savePath, json);
+            await File.WriteAllTextAsync(_savePath, json);
+
+        }
+            catch (Exception ex)
+            {
+            MessageBox.Show(
+            $"Could not save question packs: {ex.Message}",
+            "Save error",
+            MessageBoxButton.OK,
+            MessageBoxImage.Error);
+            }
+
         }
 
-        private void LoadQuestionPacks()
+        public async Task LoadQuestionPacksAsync()
         {
-            if (!File.Exists(_savePath))
-                return;
-
-            string json = File.ReadAllText(_savePath);
-
-            var packs = JsonSerializer.Deserialize<ObservableCollection<QuestionPack>>(json);
-
-            if (packs == null)
-                return;
-
-            QuestionPacks.Clear();
-
-            foreach (QuestionPack pack in packs)
+            try
             {
-                QuestionPacks.Add(pack);
+                string? directory = Path.GetDirectoryName(_savePath);
+
+                if (directory != null)
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                if (!File.Exists(_savePath))
+                {
+                    await File.WriteAllTextAsync(_savePath, "[]");
+                }
+
+                string json = await File.ReadAllTextAsync(_savePath);
+
+                var packs = JsonSerializer.Deserialize<ObservableCollection<QuestionPack>>(json);
+
+                if (packs == null)
+                    return;
+
+                QuestionPacks.Clear();
+
+                foreach (QuestionPack pack in packs)
+                {
+                    QuestionPacks.Add(pack);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Could not load question packs: {ex.Message}",
+                    "Load Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+            }
+
+
         }
 
     }

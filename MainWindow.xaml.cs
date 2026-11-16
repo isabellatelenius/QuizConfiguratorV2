@@ -19,10 +19,16 @@ namespace QuizConfiguratorV2
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private bool _allowClose = false;
+        private bool _savingOnClose = false;
+
         public MainWindow()
 
         {
             InitializeComponent();
+
+            Loaded += MainWindow_Loaded;
 
             if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
             {
@@ -30,13 +36,54 @@ namespace QuizConfiguratorV2
             }
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
+            Loaded -= MainWindow_Loaded;
+
+            if (ConfigurationViewControl.DataContext
+                is ConfigurationViewModel viewModel)
             {
-                viewModel.SaveQuestionPacks();
+                await viewModel.LoadQuestionPacksAsync();
             }
-            base.OnClosing(e);
+        }
+
+        protected override async void OnClosing(CancelEventArgs e)
+        {
+            if (_allowClose)
+            {
+                base.OnClosing(e);
+                return;
+            }
+
+            e.Cancel = true;
+
+            if (_savingOnClose)
+                return;
+
+            _savingOnClose = true;
+
+            try
+            {
+                if (ConfigurationViewControl.DataContext
+                    is ConfigurationViewModel viewModel)
+                {
+                    await viewModel.SaveQuestionPacks();
+
+                }
+
+                _allowClose = true;
+                Close();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not save: {ex.Message}");
+
+            }
+            finally
+            {
+                _savingOnClose = false;
+            }
         }
     }
 }
