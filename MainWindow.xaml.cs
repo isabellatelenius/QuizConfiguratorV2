@@ -32,6 +32,7 @@ namespace QuizConfiguratorV2
 
             if (ConfigurationViewControl.DataContext is ConfigurationViewModel viewModel)
             {
+          
                 PlayerViewControl.SetQuestionPack(viewModel.QuestionPacks);
             }
         }

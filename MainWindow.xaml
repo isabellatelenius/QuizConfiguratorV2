@@ -12,8 +12,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <views:MenuView Grid.Row="0"/>
+
+        <views:MenuView Grid.Row="0"
+                        DataContext="{Binding DataContext, ElementName=ConfigurationViewControl}"/>
 
         <TabControl Grid.Row="1">
             <TabItem Header="Configuration">
