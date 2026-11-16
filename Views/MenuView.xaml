@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:QuizConfiguratorV2.Views"
              mc:Ignorable="d" 
              d:DesignHeight="35" d:DesignWidth="1000">
+
     <Menu VerticalAlignment="Top">
         <MenuItem Header="_File">
             <MenuItem Header="_New Question Pack"
@@ -19,12 +20,13 @@
 
         <MenuItem Header="_Edit">
             <MenuItem Header="_Add Question"
-                      Command="{Binding AddQuestionCommand}"/>
+                      Command="{Binding AddQuestionCommand}"
+                      InputGestureText="Ctrl+A"/>
             <MenuItem Header="_Remove Question"
                       Command="{Binding DeleteQuestionCommand}"/>
 
             <Separator/>
-            <MenuItem Header="_Pack Options"
+            <MenuItem Header="Pack _Options"
                       Command="{Binding PackOptionsCommand}"/>
         </MenuItem>
 

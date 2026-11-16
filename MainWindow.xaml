@@ -11,8 +11,9 @@
         <KeyBinding Key="N" 
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.NewPackCommand, ElementName=ConfigurationViewControl}"/>
-        <KeyBinding Key="A" Modifiers="Control"
-                    Command="{Binding DataContext.AddQuestionCommand, ElementName=ConfigurationViewControl}"/>
+        <KeyBinding Key="A" Modifiers="Control+Shift"
+                    Command="{Binding DataContext.AddQuestionCommand,
+                      Source={x:Reference ConfigurationViewControl}}"/>
         <KeyBinding Key="Delete" Modifiers="Control"
                     Command="{Binding DataContext.DeleteQuestionCommand, ElementName=ConfigurationViewControl}"/>
         <KeyBinding Key="O" Modifiers="Control"
